@@ -1,0 +1,54 @@
+cmake_minimum_required(VERSION 2.6)
+
+file(GLOB_RECURSE examples_srcs "${PROJECT_SOURCE_DIR}/rtpose/*.cpp")
+
+# set( CMAKE_CXX_FLAGS "-std=c++11 -O3" )
+
+add_definitions(-std=c++0x -g -O3)
+
+message("outputioidnsdasdjskajdka")
+
+foreach(source_file ${examples_srcs})
+  # get file name
+  get_filename_component(name ${source_file} NAME_WE)
+
+  # get folder name
+  get_filename_component(path ${source_file} PATH)
+  get_filename_component(folder ${path} NAME_WE)
+
+  # find_library(RUNTIME_LIB rt "/home/dhp/cvcodes/caffe_rtpose/src/rtpose/bin/librptest.so")
+
+  find_package( OpenCV 3.1 REQUIRED )
+
+  include_directories(${OpenCV_INCLUDE_DIRS}
+                      /home/dhp/cvcodes/caffe_rtpose/include
+                      /usr/local/cuda-8.0/include
+                      /home/dhp/caffe/include
+                      #/usr/local/include/opencv2/dnn
+  )
+
+  link_directories(/home/dhp/cvcodes/caffe_rtpose/src/rtpose/bin)
+  add_executable(${name} ${source_file})
+
+
+  # find_library(RUNTIME_LIB rt /home/dhp/cvcodes/caffe_rtpose/src/rtpose/bin/librptest.so)
+  target_link_libraries(${name}  -lpthread
+                                 ${OpenCV_LIBS}
+                                 ${Caffe_LINK}
+                                 librptest.so)
+  install(TARGETS ${name} DESTINATION /home/dhp/cvcodes/caffe_rtpose/bin)
+  # add_executable(${name} ${source_file})
+  # caffe_default_properties(${name})
+
+  # set back RUNTIME_OUTPUT_DIRECTORY
+  # set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/rtpose/${folder}")
+
+  # caffe_set_solution_folder(${name} rtpose)
+
+  # install
+  # install(TARGETS ${name} DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+
+
+endforeach()
+
